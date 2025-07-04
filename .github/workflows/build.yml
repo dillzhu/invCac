@@ -1,86 +1,110 @@
-name: Build and Release
+name: Build package while push
 
-on:
-  push:
-    branches:
-    - main
-  pull_request:
-    branches:
-    - main
-  release:
-    types: [ created ]
-
+on: [push]
+#    # Sequence of patterns matched against refs/tags
+#    tags:
+#      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
 jobs:
-  build:
-    name: Build on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+  build-windows:
 
+    runs-on: windows-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Set up CMake
-      uses: jwlawson/actions-setup-cmake@v1.13
-      with:
-        cmake-version: '3.x'
-
-    - name: Install dependencies (Ubuntu)
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y g++
-
-    - name: Install dependencies (macOS)
-      if: matrix.os == 'macos-latest'
-      run: |
-        brew install cmake
-
-    - name: Install dependencies (Windows)
-      if: matrix.os == 'windows-latest'
-      run: |
-        choco install make
-
-    - name: Run build script
-      run: |
-        ./build.sh
-
-    - name: Archive artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: invCac-${{ matrix.os }}
-        path: build/invCac-*
-
-  release:
-    needs: build
-    if: github.event_name == 'release' && github.event.action == 'created'
+      - uses: actions/checkout@master
+      - uses: dev-drprasad/delete-tag-and-release@v1.0 # PRERELEASE is v1.0 and can also be used to test and give us feedback
+        with:
+          tag_name: PRE_Release #(required) tag name to delete
+          github_token: ${{ secrets.GITHUB_TOKEN }} # (required) a GitHub token with write access to the repo that needs to be modified
+          delete_release: true #(optional) default: true
+      - name: re-create PRE_Release # 得先干，linux的build更快，需要先做
+        id: create_release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "PRE_Release"
+          release_name: PRE_Release
+          body: This is a release created while code pushed
+          draft: false
+          prerelease: true
+      - name: Get current pre-release
+        id: get_release
+        uses: joutvhu/get-release@v1.0.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: PRE_Release
+          # Tag name start with `v`
+      - name: Prepare CMake
+        uses: threeal/cmake-action@v2.1.0
+      - name: build Project
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: build/invCac.exe
+          asset_name: invCac-windows-x86_64.exe
+          asset_content_type: application/exe
+  build-linux:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Download all artifacts
-      uses: actions/download-artifact@v2
-      with:
-        path: artifacts
-
-    - name: Create release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
-
-    - name: Upload release assets
-      uses: csexton/release-asset-action@v2
-      with:
-        pattern: "artifacts/**/*"
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        release-url: ${{ steps.create_release.outputs.upload_url }}
+      - uses: actions/checkout@master
+      - name: Prepare CMake
+        uses: threeal/cmake-action@v2.1.0
+      - name: build Project
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
+      - name: Get current pre-release
+        id: get_release
+        uses: joutvhu/get-release@v1.0.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: PRE_Release
+          # Tag name start with `v`
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: build/invCac
+          asset_name: invCac-ubuntu-x86_64
+          asset_content_type: application/exe
+  build-macos:
+    runs-on: macos-latest # macos Apple Silicon
+    steps:
+      - uses: actions/checkout@master
+      - name: Prepare CMake
+        uses: threeal/cmake-action@v2.1.0
+      - name: build Project
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
+      - name: Get current pre-release
+        id: get_release
+        uses: joutvhu/get-release@v1.0.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: PRE_Release
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: build/incCac
+          asset_name: incCac-macos-arm64
+          asset_content_type: application/exe
