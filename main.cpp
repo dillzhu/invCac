@@ -5,6 +5,7 @@
 #include <Eigen/Dense>
 #include <locale>
 #include <codecvt>
+#include <optional>
 
 using namespace std;
 using namespace Eigen;
