@@ -38,7 +38,7 @@ jobs:
         uses: threeal/cmake-action@v2.1.0
       - name: build Project
         run: |
-          mkdir build
+          mkdir -p build
           cd build
           cmake ..
           make
@@ -59,7 +59,7 @@ jobs:
         uses: threeal/cmake-action@v2.1.0
       - name: build Project
         run: |
-          mkdir build
+          mkdir -p build
           cd build
           cmake ..
           make
@@ -88,7 +88,7 @@ jobs:
         uses: threeal/cmake-action@v2.1.0
       - name: build Project
         run: |
-          mkdir build
+          mkdir -p build
           cd build
           cmake ..
           make
