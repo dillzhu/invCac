@@ -36,12 +36,20 @@ jobs:
           # Tag name start with `v`
       - name: Prepare CMake
         uses: threeal/cmake-action@v2.1.0
-      - name: build Project
+      - name: Build with CMake
+        shell: pwsh
         run: |
-          mkdir -p build
-          cd build
+          # 创建 build 目录（如果不存在）
+          if (-Not (Test-Path -Path "build")) {
+            New-Item -ItemType Directory -Path "build"
+          }
+          # 切换到 build 目录
+          Set-Location -Path "build"
+          # 运行 CMake 配置
           cmake ..
+          # 运行 make 命令
           make
+
       - name: Upload Release Asset
         uses: actions/upload-release-asset@master
         env:
@@ -105,6 +113,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: build/incCac
-          asset_name: incCac-macos-arm64
+          asset_path: build/invCac
+          asset_name: invCac-macos-arm64
           asset_content_type: application/exe
