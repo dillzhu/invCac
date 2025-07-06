@@ -46,9 +46,10 @@ jobs:
           # 切换到 build 目录
           cd build
           # 运行 CMake 配置
-          cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_CXX_STANDARD = 17 -DCMAKE_CXX_STANDARD_REQUIRED = ON -DCMAKE_CXX_EXTENSIONS = OFF
+          cmake ..
+
           # 执行编译
-          msbuild invCac.sln /p:Configuration = Debug /p:Platform = x64
+          cmake --build . --config Release
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@master
