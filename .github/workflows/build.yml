@@ -48,6 +48,8 @@ jobs:
           # 运行 CMake 配置
           cmake ..
           pwd
+          tree
+          cat Makefile
           # 运行 make 命令
           make
 
