@@ -34,8 +34,8 @@ jobs:
         with:
           tag_name: PRE_Release
           # Tag name start with `v`
-      - name: Prepare CMake
-        uses: threeal/cmake-action@v2.1.0
+      # - name: Prepare CMake
+      #   uses: threeal/cmake-action@v2.1.0
       - name: Build with CMake
         shell: pwsh
         run: |
