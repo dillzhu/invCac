@@ -49,7 +49,7 @@ jobs:
           cmake ..
           pwd
           # 运行 make 命令
-          cd build && make
+          make
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@master
