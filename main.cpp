@@ -72,7 +72,7 @@ MatrixXd readMatrixFromFile(const string& filename) {
 void saveMatrixToFile(const MatrixXd& matrix, const string& filename) {
     ofstream file(filename);
     if (!file.is_open()) {
-        cerr << "无法打开文件: " << filename << endl;
+        cerr << "Unable to read: " << filename << endl;
         exit(1);
     }
 
@@ -93,13 +93,13 @@ void saveMatrixToFile(const MatrixXd& matrix, const string& filename) {
 // 计算矩阵的逆
 MatrixXd computeInverse(const MatrixXd& matrix) {
     if (matrix.rows() != matrix.cols()) {
-        cerr << "矩阵不是方阵，无法计算逆矩阵。规模为"<<matrix.rows()<< " "<< matrix.cols()  << endl;
+        cerr << "The input martix is not square"<<matrix.rows()<< " "<< matrix.cols()  << endl;
         exit(1);
     }
 
     MatrixXd invMatrix = matrix.inverse();
     if (invMatrix.hasNaN()) {
-        cerr << "矩阵不可逆" << endl;
+        cerr << "Unable to inv" << endl;
         exit(1);
     }
     return invMatrix;
@@ -122,22 +122,22 @@ void printMatrix(const MatrixXd& matrix) {
 
 int main() {
     string inputFilename, outputFilename;
-    cout << "请输入矩阵文件名: ";
+    cout << "Name of file of the input Martix(in csv): ";
     cin >> inputFilename;
 
     MatrixXd matrix = readMatrixFromFile(inputFilename);
-    cout << "原始矩阵:" << endl;
+    cout << "Orgin Martix:" << endl;
     printMatrix(matrix);
 
     MatrixXd invMatrix = computeInverse(matrix);
-    cout << "逆矩阵:" << endl;
+    cout << "Inv Martix:" << endl;
     printMatrix(invMatrix);
 
-    cout << "请输入逆矩阵保存的文件名: ";
+    cout << "Name of output csv file: ";
     cin >> outputFilename;
     saveMatrixToFile(invMatrix, outputFilename);
 
-    cout << "逆矩阵已保存到 " << outputFilename << endl;
+    cout << "Reverse Martix been written to " << outputFilename << endl;
 
     return 0;
 }
