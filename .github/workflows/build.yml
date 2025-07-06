@@ -47,8 +47,9 @@ jobs:
           cd build
           # 运行 CMake 配置
           cmake ..
+          pwd
           # 运行 make 命令
-          make
+          cd build && make
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@master
