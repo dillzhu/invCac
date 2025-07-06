@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 project(invCac)
 
-# 设置C++标准
+# 设置C++标准为17
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF) # 关闭非标准的C++拓展
 
 # 下载和添加Eigen库
 include(FetchContent)

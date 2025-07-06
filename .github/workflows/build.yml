@@ -48,7 +48,7 @@ jobs:
           # 运行 CMake 配置
           cmake ..
           pwd
-          tree
+          ls
           cat Makefile
           # 运行 make 命令
           make
@@ -66,8 +66,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Prepare CMake
-        uses: threeal/cmake-action@v2.1.0
+      # - name: Prepare CMake
+      #   uses: threeal/cmake-action@v2.1.0
       - name: build Project
         run: |
           mkdir -p build
@@ -95,8 +95,8 @@ jobs:
     runs-on: macos-latest # macos Apple Silicon
     steps:
       - uses: actions/checkout@master
-      - name: Prepare CMake
-        uses: threeal/cmake-action@v2.1.0
+      # - name: Prepare CMake
+      #   uses: threeal/cmake-action@v2.1.0
       - name: build Project
         run: |
           mkdir -p build
