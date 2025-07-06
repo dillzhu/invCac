@@ -44,7 +44,7 @@ jobs:
             New-Item -ItemType Directory -Path "build"
           }
           # 切换到 build 目录
-          Set-Location -Path "build"
+          cd build
           # 运行 CMake 配置
           cmake ..
           # 运行 make 命令
