@@ -57,7 +57,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: build/invCac.exe
+          asset_path: build\Release\invCac.exe
           asset_name: invCac-windows-x86_64.exe
           asset_content_type: application/exe
   build-linux:
