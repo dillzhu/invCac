@@ -3,7 +3,7 @@ project(invCac)
 
 # 设置C++标准
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 下载和添加Eigen库
 include(FetchContent)
